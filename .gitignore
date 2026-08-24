@@ -1,0 +1,34 @@
+# ========== SpringBoot后端 ==========
+backend/target/
+backend/.idea/
+backend/*.iml
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/logs/
+backend/*.log
+
+# 仅忽略本机真实配置（带密码），application-template.yml模板会正常上传
+backend/src/main/resources/application.yml
+
+# 不提交接口测试文件 test-api.http
+backend/src/main/resources/test-api.http
+
+# 保留uploads目录结构与初始图片，程序运行新上传图片自动忽略
+!backend/uploads/
+
+# ========== Vue3前端 ==========
+frontend/node_modules/
+frontend/dist/
+frontend/.vscode/
+frontend/.idea/
+frontend/*.local
+
+# ========== IDE、系统临时文件 ==========
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
