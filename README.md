@@ -231,17 +231,20 @@ cat_db
 cat-platform-project
 ├── backend                 # SpringBoot后端
 │   ├── src
-│ 	│	└── application-template.yml
+│ 	│	└── main / resources / application-template.yml
 │   ├── pom.xml
 │   └── uploads                 # 图片上传目录
+│   	├── agreements
 │   	├── avatars
 │   	├── cats
 │   	├── community
+│   	├── donations
 │   	└── tasks
 ├── frontend                # Vue3前端
+│   ├── public
 │   ├── src
-│   ├── package.json
-│   └── vite.config.js
+│   ├── index.html
+│   └── package.json
 ├── database                # 数据库文件
 │   └── cat_db.sql
 ├── docs                    # 项目文档及截图
