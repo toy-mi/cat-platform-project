@@ -1,0 +1,120 @@
+### 登录普通用户
+#POST http://localhost:8080/api/user/login
+#Content-Type: application/json
+#
+#{
+#  "username": "testvolunteer",
+#  "password": "123456"
+#}
+#
+#> {%
+#    client.test("Login success", function() {
+#        client.assert(response.status === 200, "Response status is not 200");
+#    });
+#    // 手动将返回的 data.token 复制到 http-client.env.json 的 userToken 字段
+#%}
+#
+#
+#
+#### 正常提交领养申请
+#POST http://localhost:8080/api/adoptions/apply
+#Content-Type: application/json
+#Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwidXNlcklkIjo4LCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3Njc1MzI4MSwiZXhwIjoxNzc2ODM5NjgxfQ.NZBABdXb3FTzMJkeY2K2f8En8pMbh8vwqNKcXAd4KA0
+#
+#{
+#  "catId": 2,
+#  "applicationData": "{\"houseType\":\"自有住房\",\"familyMembers\":2,\"hasChildren\":false,\"petExperience\":\"有养猫经验\",\"other\":\"\"}"
+#}
+
+
+#### 重复申请同一猫咪（应返回错误）
+#POST http://localhost:8080/api/adoptions/apply
+#Content-Type: application/json
+#Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwidXNlcklkIjo4LCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3Njc1MzI4MSwiZXhwIjoxNzc2ODM5NjgxfQ.NZBABdXb3FTzMJkeY2K2f8En8pMbh8vwqNKcXAd4KA0
+#
+#{
+#  "catId": 2,
+#  "applicationData": "{}"
+
+
+#### 未登录提交申请（应返回401）
+#POST http://localhost:8080/api/adoptions/apply
+#Content-Type: application/json
+#
+#{
+#  "catId": 2,
+#  "applicationData": "{}"
+#}
+
+
+#### 志愿者初审通过
+#PUT http://localhost:8080/api/adoptions/21/first-review?status=1
+#Content-Type: application/json
+#Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dm9sdW50ZWVyIiwidXNlcklkIjoxMSwicm9sZSI6IlZPTFVOVEVFUiIsImlhdCI6MTc3Njc1MzM1MSwiZXhwIjoxNzc2ODM5NzUxfQ.Eg5omIRbGQZGlOWQLpczrXIGE012FvIEsgb8xWoZcgY
+#
+#{
+#  "remark": "初审通过，材料齐全"
+#}
+
+#### 对已初审的申请再次初审（应返回错误）
+#PUT http://localhost:8080/api/adoptions/21/first-review?status=1
+#Content-Type: application/json
+#Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dm9sdW50ZWVyIiwidXNlcklkIjoxMSwicm9sZSI6IlZPTFVOVEVFUiIsImlhdCI6MTc3Njc1MzM1MSwiZXhwIjoxNzc2ODM5NzUxfQ.Eg5omIRbGQZGlOWQLpczrXIGE012FvIEsgb8xWoZcgY
+#
+#{
+#  "remark": "再次初审"
+#}
+
+#### 普通用户尝试初审（应返回403）
+#PUT http://localhost:8080/api/adoptions/16/first-review?status=1
+#Content-Type: application/json
+#Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwidXNlcklkIjo4LCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3Njc1MzI4MSwiZXhwIjoxNzc2ODM5NjgxfQ.NZBABdXb3FTzMJkeY2K2f8En8pMbh8vwqNKcXAd4KA0
+#
+#{
+#  "remark": "无权操作"
+#}
+
+
+#### 注册普通用户
+#POST http://localhost:8080/api/user/register
+#Content-Type: application/json
+#
+#{
+#  "username": "testuser4",
+#  "password": "123456",
+#  "nickname": "测试用户4",
+#  "email": "test@example.com",
+#  "phone": "12345678901",
+#  "role": "USER",
+#  "status": 1
+#}
+
+#### 登录普通用户
+POST http://localhost:8080/api/user/login
+Content-Type: application/json
+
+ {
+   "username": "testuser4",
+   "password": "123456"
+ }
+
+> {%
+    // 解析返回的JSON，提取data中的token字段
+    client.global.set("userToken", response.body.data.token);
+    client.log("Token 已自动保存: " + response.body.data.token);
+%}
+
+
+### 获取所有猫咪
+GET http://localhost:8080/api/cats
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+> {%
+    client.log("获取所有猫咪成功");
+%}
+
+### 获取用户公开信息
+GET http://localhost:8080/api/adoptions/5
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
